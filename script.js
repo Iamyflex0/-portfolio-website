@@ -1,365 +1,401 @@
 /* =========================================================
-   SHOVON MAHALI — PERSONAL PORTFOLIO
-   COMPLETE UPDATED SCRIPT.JS
-========================================================= */
+   SHOVON MAHALI — PROFESSIONAL PORTFOLIO
+   script.js
+   ========================================================= */
 
+document.addEventListener("DOMContentLoaded", () => {
 
-/* =========================================================
-   01. GET DOM ELEMENTS
-========================================================= */
+    /* =====================================================
+       ELEMENT SELECTORS
+    ====================================================== */
 
-const menuToggle = document.getElementById("menuToggle");
-const navLinks = document.getElementById("navLinks");
+    const header = document.getElementById("siteHeader");
 
-const dropdown = document.querySelector(".dropdown");
-const dropdownToggle = document.getElementById("dropdownToggle");
-const dropdownMenu = document.getElementById("dropdownMenu");
+    const mobileMenuButton =
+        document.getElementById("mobileMenuButton");
 
-const currentYear = document.getElementById("current-year");
+    const navWrapper =
+        document.getElementById("navWrapper");
 
+    const dropdownTrigger =
+        document.getElementById("dropdownTrigger");
 
-/* =========================================================
-   02. MOBILE NAVIGATION
-========================================================= */
+    const dropdownMenu =
+        document.getElementById("moreMenu");
 
-if (menuToggle && navLinks) {
+    const dropdown =
+        document.querySelector(".nav-dropdown");
 
-    menuToggle.addEventListener("click", function () {
+    const pageLoader =
+        document.getElementById("pageLoader");
 
-        navLinks.classList.toggle("open");
+    const currentYear =
+        document.getElementById("currentYear");
 
-        menuToggle.classList.toggle("active");
+    const navLinks =
+        document.querySelectorAll(".nav-link");
 
-        const isOpen =
-            navLinks.classList.contains("open");
-
-        menuToggle.setAttribute(
-            "aria-expanded",
-            isOpen
+    const internalLinks =
+        document.querySelectorAll(
+            'a[href^="#"]'
         );
 
-    });
+    const sections =
+        document.querySelectorAll(
+            "main section[id]"
+        );
 
-}
 
 
-/* =========================================================
-   03. MORE DROPDOWN
-========================================================= */
+    /* =====================================================
+       PAGE LOADER
+    ====================================================== */
 
-if (
-    dropdown &&
-    dropdownToggle &&
-    dropdownMenu
-) {
+    function hidePageLoader() {
 
-    dropdownToggle.addEventListener(
-        "click",
-        function (event) {
+        if (!pageLoader) return;
 
-            event.stopPropagation();
+        pageLoader.classList.add("hidden");
 
-            dropdown.classList.toggle("active");
+        /*
+         * Remove it from accessibility tree after
+         * the animation has finished.
+         */
+        setTimeout(() => {
 
-            const isOpen =
-                dropdown.classList.contains("active");
+            pageLoader.setAttribute(
+                "aria-hidden",
+                "true"
+            );
 
-            dropdownToggle.setAttribute(
-                "aria-expanded",
-                isOpen
+        }, 700);
+
+    }
+
+
+    /*
+     * Hide loader when the page has fully loaded.
+     */
+    window.addEventListener(
+        "load",
+        () => {
+
+            setTimeout(
+                hidePageLoader,
+                250
             );
 
         }
     );
 
-}
 
 
-/* =========================================================
-   04. CLOSE DROPDOWN WHEN CLICKING OUTSIDE
-========================================================= */
+    /* =====================================================
+       MOBILE NAVIGATION
+    ====================================================== */
 
-document.addEventListener(
-    "click",
-    function (event) {
+    function openMobileMenu() {
 
         if (
-            dropdown &&
-            !dropdown.contains(event.target)
+            !mobileMenuButton ||
+            !navWrapper
         ) {
-
-            dropdown.classList.remove("active");
-
-            if (dropdownToggle) {
-
-                dropdownToggle.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
-
-            }
-
+            return;
         }
 
-    }
-);
 
+        navWrapper.classList.add("open");
 
-/* =========================================================
-   05. NAVIGATION LINK CLICK
-========================================================= */
+        mobileMenuButton.classList.add("active");
 
-const allNavLinks =
-    document.querySelectorAll(
-        ".nav-links a"
-    );
+        mobileMenuButton.setAttribute(
+            "aria-expanded",
+            "true"
+        );
 
+        mobileMenuButton.setAttribute(
+            "aria-label",
+            "Close navigation"
+        );
 
-allNavLinks.forEach(
-    function (link) {
-
-        link.addEventListener(
-            "click",
-            function () {
-
-
-                /* Close mobile menu */
-
-                if (navLinks) {
-
-                    navLinks.classList.remove(
-                        "open"
-                    );
-
-                }
-
-
-                /* Reset hamburger */
-
-                if (menuToggle) {
-
-                    menuToggle.classList.remove(
-                        "active"
-                    );
-
-                    menuToggle.setAttribute(
-                        "aria-expanded",
-                        "false"
-                    );
-
-                }
-
-
-                /* Close dropdown */
-
-                if (dropdown) {
-
-                    dropdown.classList.remove(
-                        "active"
-                    );
-
-                }
-
-
-                if (dropdownToggle) {
-
-                    dropdownToggle.setAttribute(
-                        "aria-expanded",
-                        "false"
-                    );
-
-                }
-
-            }
+        /*
+         * Prevent background page scrolling
+         * while the mobile navigation is open.
+         */
+        document.body.classList.add(
+            "menu-open"
         );
 
     }
-);
 
 
-/* =========================================================
-   06. ACTIVE NAVIGATION
-========================================================= */
+    function closeMobileMenu() {
 
-const sections =
-    document.querySelectorAll(
-        "section[id]"
-    );
-
-
-const navigationLinks =
-    document.querySelectorAll(
-        ".nav-links > li > a:not(.nav-resume), .dropdown-menu a"
-    );
-
-
-function updateActiveNavigation() {
-
-    let currentSection = "";
-
-    const scrollPosition =
-        window.scrollY;
-
-
-    sections.forEach(
-        function (section) {
-
-            const sectionTop =
-                section.offsetTop - 160;
-
-            const sectionBottom =
-                sectionTop +
-                section.offsetHeight;
-
-
-            if (
-                scrollPosition >= sectionTop &&
-                scrollPosition < sectionBottom
-            ) {
-
-                currentSection =
-                    section.getAttribute("id");
-
-            }
-
+        if (
+            !mobileMenuButton ||
+            !navWrapper
+        ) {
+            return;
         }
-    );
 
 
-    navigationLinks.forEach(
-        function (link) {
+        navWrapper.classList.remove("open");
 
-            link.classList.remove(
-                "active"
-            );
-
-
-            const href =
-                link.getAttribute("href");
-
-
-            if (
-                href ===
-                "#" + currentSection
-            ) {
-
-                link.classList.add(
-                    "active"
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-/* Run on scroll */
-
-window.addEventListener(
-    "scroll",
-    updateActiveNavigation,
-    {
-        passive: true
-    }
-);
-
-
-/* =========================================================
-   07. MORE MENU ACTIVE STATE
-========================================================= */
-
-function updateDropdownActiveState() {
-
-    const currentHash =
-        window.location.hash;
-
-
-    const dropdownLinks =
-        document.querySelectorAll(
-            ".dropdown-menu a"
-        );
-
-
-    let dropdownIsActive = false;
-
-
-    dropdownLinks.forEach(
-        function (link) {
-
-            link.classList.remove(
-                "active"
-            );
-
-
-            if (
-                link.getAttribute("href") ===
-                currentHash
-            ) {
-
-                link.classList.add(
-                    "active"
-                );
-
-                dropdownIsActive = true;
-
-            }
-
-        }
-    );
-
-
-    if (
-        dropdown &&
-        dropdownIsActive
-    ) {
-
-        dropdown.classList.add(
+        mobileMenuButton.classList.remove(
             "active"
         );
 
+        mobileMenuButton.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+        mobileMenuButton.setAttribute(
+            "aria-label",
+            "Open navigation"
+        );
+
+        document.body.classList.remove(
+            "menu-open"
+        );
+
     }
 
-}
+
+    function toggleMobileMenu() {
+
+        if (!navWrapper) return;
 
 
-/* =========================================================
-   08. SCROLL REVEAL ANIMATION
-========================================================= */
+        const isOpen =
+            navWrapper.classList.contains("open");
 
-const revealElements =
-    document.querySelectorAll(
-        ".section, " +
-        ".skill-card, " +
-        ".experience-card, " +
-        ".research-card, " +
-        ".project-card, " +
-        ".timeline-item, " +
-        ".entrepreneurship-content, " +
-        ".resume-content"
+
+        if (isOpen) {
+
+            closeMobileMenu();
+
+        } else {
+
+            openMobileMenu();
+
+        }
+
+    }
+
+
+    if (mobileMenuButton) {
+
+        mobileMenuButton.addEventListener(
+            "click",
+            (event) => {
+
+                event.stopPropagation();
+
+                toggleMobileMenu();
+
+            }
+        );
+
+    }
+
+
+
+    /* =====================================================
+       MORE DROPDOWN
+    ====================================================== */
+
+    function openDropdown() {
+
+        if (
+            !dropdown ||
+            !dropdownTrigger
+        ) {
+            return;
+        }
+
+
+        dropdown.classList.add("open");
+
+        dropdownTrigger.setAttribute(
+            "aria-expanded",
+            "true"
+        );
+
+    }
+
+
+    function closeDropdown() {
+
+        if (
+            !dropdown ||
+            !dropdownTrigger
+        ) {
+            return;
+        }
+
+
+        dropdown.classList.remove("open");
+
+        dropdownTrigger.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+    }
+
+
+    function toggleDropdown() {
+
+        if (!dropdown) return;
+
+
+        const isOpen =
+            dropdown.classList.contains("open");
+
+
+        if (isOpen) {
+
+            closeDropdown();
+
+        } else {
+
+            openDropdown();
+
+        }
+
+    }
+
+
+    if (dropdownTrigger) {
+
+        dropdownTrigger.addEventListener(
+            "click",
+            (event) => {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+                toggleDropdown();
+
+            }
+        );
+
+    }
+
+
+
+    /* =====================================================
+       CLOSE DROPDOWN WHEN CLICKING OUTSIDE
+    ====================================================== */
+
+    document.addEventListener(
+        "click",
+        (event) => {
+
+            if (
+                dropdown &&
+                !dropdown.contains(
+                    event.target
+                )
+            ) {
+
+                closeDropdown();
+
+            }
+
+        }
     );
 
 
-const revealObserver =
-    new IntersectionObserver(
 
-        function (entries) {
+    /* =====================================================
+       SMOOTH SCROLLING
+    ====================================================== */
 
-            entries.forEach(
-                function (entry) {
+    internalLinks.forEach(
+        (link) => {
 
+            link.addEventListener(
+                "click",
+                (event) => {
+
+                    const href =
+                        link.getAttribute("href");
+
+
+                    /*
+                     * Ignore empty hashes.
+                     */
                     if (
-                        entry.isIntersecting
+                        !href ||
+                        href === "#"
                     ) {
+                        return;
+                    }
 
-                        entry.target.classList.add(
-                            "show"
+
+                    /*
+                     * Only process valid internal
+                     * section links.
+                     */
+                    if (
+                        !href.startsWith("#")
+                    ) {
+                        return;
+                    }
+
+
+                    const target =
+                        document.querySelector(
+                            href
                         );
 
 
-                        revealObserver.unobserve(
-                            entry.target
+                    if (!target) return;
+
+
+                    /*
+                     * Prevent the browser's
+                     * default jump.
+                     */
+                    event.preventDefault();
+
+
+                    /*
+                     * Close menus.
+                     */
+                    closeMobileMenu();
+
+                    closeDropdown();
+
+
+                    /*
+                     * Scroll smoothly.
+                     */
+                    target.scrollIntoView({
+                        behavior:
+                            prefersReducedMotion()
+                                ? "auto"
+                                : "smooth",
+
+                        block: "start"
+                    });
+
+
+                    /*
+                     * Update the URL without
+                     * forcing another page jump.
+                     */
+                    if (
+                        history.pushState
+                    ) {
+
+                        history.pushState(
+                            null,
+                            "",
+                            href
                         );
 
                     }
@@ -367,183 +403,812 @@ const revealObserver =
                 }
             );
 
-        },
-
-        {
-            threshold: 0.12,
-
-            rootMargin:
-                "0px 0px -40px 0px"
         }
-
     );
 
 
-revealElements.forEach(
-    function (element) {
 
-        revealObserver.observe(
-            element
+    /* =====================================================
+       REDUCED MOTION CHECK
+    ====================================================== */
+
+    function prefersReducedMotion() {
+
+        return window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+        ).matches;
+
+    }
+
+
+
+    /* =====================================================
+       ACTIVE NAVIGATION
+    ====================================================== */
+
+    function updateActiveNavigation() {
+
+        if (!sections.length) return;
+
+
+        const scrollPosition =
+            window.scrollY + 180;
+
+
+        let currentSection = "home";
+
+
+        sections.forEach(
+            (section) => {
+
+                const sectionTop =
+                    section.offsetTop;
+
+
+                const sectionHeight =
+                    section.offsetHeight;
+
+
+                if (
+                    scrollPosition >= sectionTop &&
+                    scrollPosition <
+                        sectionTop + sectionHeight
+                ) {
+
+                    currentSection =
+                        section.id;
+
+                }
+
+            }
         );
 
-    }
-);
-
-
-/* =========================================================
-   09. CURRENT YEAR
-========================================================= */
-
-if (currentYear) {
-
-    currentYear.textContent =
-        new Date().getFullYear();
-
-}
-
-
-/* =========================================================
-   10. ESCAPE KEY
-========================================================= */
-
-document.addEventListener(
-    "keydown",
-    function (event) {
-
-        if (
-            event.key === "Escape"
-        ) {
-
-
-            /* Close dropdown */
-
-            if (dropdown) {
-
-                dropdown.classList.remove(
-                    "active"
-                );
-
-            }
-
-
-            if (dropdownToggle) {
-
-                dropdownToggle.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
-
-            }
-
-
-            /* Close mobile navigation */
-
-            if (navLinks) {
-
-                navLinks.classList.remove(
-                    "open"
-                );
-
-            }
-
-
-            if (menuToggle) {
-
-                menuToggle.classList.remove(
-                    "active"
-                );
-
-                menuToggle.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
-
-            }
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   11. HANDLE WINDOW RESIZE
-========================================================= */
-
-window.addEventListener(
-    "resize",
-    function () {
 
         /*
-         * If the screen becomes desktop-sized,
-         * make sure the mobile menu is reset.
+         * Contact becomes active when the user
+         * reaches the bottom of the page.
          */
+        const pageBottom =
+            window.innerHeight +
+            window.scrollY >=
+            document.documentElement.scrollHeight - 100;
+
+
+        if (pageBottom) {
+
+            currentSection = "contact";
+
+        }
+
+
+        /*
+         * Main navigation links.
+         */
+        navLinks.forEach(
+            (link) => {
+
+                const href =
+                    link.getAttribute("href");
+
+
+                /*
+                 * Don't treat the More button
+                 * as a normal navigation link.
+                 */
+                if (
+                    link === dropdownTrigger
+                ) {
+                    return;
+                }
+
+
+                if (
+                    href === `#${currentSection}`
+                ) {
+
+                    link.classList.add(
+                        "active"
+                    );
+
+                } else {
+
+                    link.classList.remove(
+                        "active"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /*
+         * Sections contained inside the More menu.
+         */
+        const moreSections = [
+            "research",
+            "entrepreneurship",
+            "education",
+            "certifications",
+            "awards",
+            "contact"
+        ];
+
 
         if (
-            window.innerWidth > 900
+            dropdownTrigger &&
+            moreSections.includes(
+                currentSection
+            )
         ) {
 
-            if (navLinks) {
+            dropdownTrigger.classList.add(
+                "active"
+            );
 
-                navLinks.classList.remove(
-                    "open"
-                );
+        } else if (dropdownTrigger) {
 
-            }
-
-            if (menuToggle) {
-
-                menuToggle.classList.remove(
-                    "active"
-                );
-
-                menuToggle.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
-
-            }
+            dropdownTrigger.classList.remove(
+                "active"
+            );
 
         }
 
     }
-);
 
 
-/* =========================================================
-   12. PAGE LOAD
-========================================================= */
+    /*
+     * Scroll listener.
+     */
+    window.addEventListener(
+        "scroll",
+        updateActiveNavigation,
+        {
+            passive: true
+        }
+    );
 
-window.addEventListener(
-    "load",
-    function () {
 
-        document.body.classList.add(
-            "loaded"
+
+    /* =====================================================
+       HEADER SCROLL STATE
+    ====================================================== */
+
+    function updateHeader() {
+
+        if (!header) return;
+
+
+        if (window.scrollY > 25) {
+
+            header.classList.add(
+                "scrolled"
+            );
+
+        } else {
+
+            header.classList.remove(
+                "scrolled"
+            );
+
+        }
+
+    }
+
+
+    window.addEventListener(
+        "scroll",
+        updateHeader,
+        {
+            passive: true
+        }
+    );
+
+
+
+    /* =====================================================
+       SCROLL REVEAL
+    ====================================================== */
+
+    const revealElements =
+        document.querySelectorAll(
+            `
+            .section-intro,
+            .focus-card,
+            .about-copy,
+            .about-details,
+            .experience-card,
+            .skill-card,
+            .research-card,
+            .entrepreneurship-grid,
+            .education-item,
+            .certification-item,
+            .award-card,
+            .project-card,
+            .resume-inner,
+            .contact-intro,
+            .contact-links
+            `
         );
 
 
-        updateActiveNavigation();
+    /*
+     * If reduced motion is enabled, don't
+     * use animation observers.
+     */
+    if (
+        prefersReducedMotion()
+    ) {
 
-        updateDropdownActiveState();
+        revealElements.forEach(
+            (element) => {
+
+                element.classList.add(
+                    "reveal-visible"
+                );
+
+            }
+        );
+
+    } else if (
+        "IntersectionObserver" in window
+    ) {
+
+        revealElements.forEach(
+            (element) => {
+
+                element.classList.add(
+                    "reveal"
+                );
+
+            }
+        );
+
+
+        const revealObserver =
+            new IntersectionObserver(
+                (entries, observer) => {
+
+                    entries.forEach(
+                        (entry) => {
+
+                            if (
+                                entry.isIntersecting
+                            ) {
+
+                                entry.target.classList.add(
+                                    "reveal-visible"
+                                );
+
+
+                                observer.unobserve(
+                                    entry.target
+                                );
+
+                            }
+
+                        }
+                    );
+
+                },
+                {
+                    threshold: 0.12,
+
+                    rootMargin:
+                        "0px 0px -50px 0px"
+                }
+            );
+
+
+        revealElements.forEach(
+            (element) => {
+
+                revealObserver.observe(
+                    element
+                );
+
+            }
+        );
+
+    } else {
+
+        /*
+         * Fallback for older browsers.
+         */
+        revealElements.forEach(
+            (element) => {
+
+                element.classList.add(
+                    "reveal-visible"
+                );
+
+            }
+        );
 
     }
-);
 
 
-/* =========================================================
-   13. INITIAL ACTIVE NAVIGATION
-========================================================= */
 
-updateActiveNavigation();
+    /* =====================================================
+       STAGGERED CARD DELAYS
+    ====================================================== */
 
-updateDropdownActiveState();
+    const staggerGroups = [
+        ".focus-grid .focus-card",
+        ".skills-grid .skill-card",
+        ".experience-list .experience-card",
+        ".research-grid .research-card",
+        ".certifications-list .certification-item",
+        ".awards-grid .award-card",
+        ".projects-grid .project-card"
+    ];
 
 
-/* =========================================================
-   14. CONSOLE MESSAGE
-========================================================= */
+    staggerGroups.forEach(
+        (selector) => {
 
-console.log(
-    "Shovon Mahali Portfolio — Website loaded successfully."
-);
+            const cards =
+                document.querySelectorAll(
+                    selector
+                );
+
+
+            cards.forEach(
+                (card, index) => {
+
+                    /*
+                     * Maximum delay prevents
+                     * very slow animations on
+                     * long lists.
+                     */
+                    const delay =
+                        Math.min(
+                            index * 70,
+                            420
+                        );
+
+
+                    card.style.setProperty(
+                        "--stagger-delay",
+                        `${delay}ms`
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+
+    /* =====================================================
+       MOBILE MENU — CLOSE AFTER LINK CLICK
+    ====================================================== */
+
+    if (navWrapper) {
+
+        const navigationLinks =
+            navWrapper.querySelectorAll(
+                "a"
+            );
+
+
+        navigationLinks.forEach(
+            (link) => {
+
+                link.addEventListener(
+                    "click",
+                    () => {
+
+                        closeMobileMenu();
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+
+
+    /* =====================================================
+       ESCAPE KEY
+    ====================================================== */
+
+    document.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (
+                event.key !== "Escape"
+            ) {
+                return;
+            }
+
+
+            /*
+             * Close More dropdown.
+             */
+            closeDropdown();
+
+
+            /*
+             * Close mobile navigation.
+             */
+            closeMobileMenu();
+
+
+            /*
+             * Return focus to menu button
+             * when appropriate.
+             */
+            if (
+                mobileMenuButton &&
+                window.innerWidth <= 900
+            ) {
+
+                mobileMenuButton.focus();
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================================
+       DROPDOWN KEYBOARD NAVIGATION
+    ====================================================== */
+
+    if (
+        dropdownTrigger &&
+        dropdownMenu
+    ) {
+
+        const dropdownLinks =
+            dropdownMenu.querySelectorAll(
+                "a"
+            );
+
+
+        /*
+         * Arrow Down from More button.
+         */
+        dropdownTrigger.addEventListener(
+            "keydown",
+            (event) => {
+
+                if (
+                    event.key === "ArrowDown"
+                ) {
+
+                    event.preventDefault();
+
+                    openDropdown();
+
+
+                    if (
+                        dropdownLinks.length
+                    ) {
+
+                        dropdownLinks[0].focus();
+
+                    }
+
+                }
+
+
+                if (
+                    event.key === "Escape"
+                ) {
+
+                    event.preventDefault();
+
+                    closeDropdown();
+
+                    dropdownTrigger.focus();
+
+                }
+
+            }
+        );
+
+
+        /*
+         * Keyboard movement inside dropdown.
+         */
+        dropdownLinks.forEach(
+            (link, index) => {
+
+                link.addEventListener(
+                    "keydown",
+                    (event) => {
+
+                        /*
+                         * Move down.
+                         */
+                        if (
+                            event.key ===
+                            "ArrowDown"
+                        ) {
+
+                            event.preventDefault();
+
+
+                            const next =
+                                dropdownLinks[
+                                    index + 1
+                                ];
+
+
+                            if (next) {
+
+                                next.focus();
+
+                            }
+
+                        }
+
+
+                        /*
+                         * Move up.
+                         */
+                        if (
+                            event.key ===
+                            "ArrowUp"
+                        ) {
+
+                            event.preventDefault();
+
+
+                            const previous =
+                                dropdownLinks[
+                                    index - 1
+                                ];
+
+
+                            if (previous) {
+
+                                previous.focus();
+
+                            } else {
+
+                                dropdownTrigger.focus();
+
+                            }
+
+                        }
+
+
+                        /*
+                         * Close with Escape.
+                         */
+                        if (
+                            event.key ===
+                            "Escape"
+                        ) {
+
+                            event.preventDefault();
+
+                            closeDropdown();
+
+                            dropdownTrigger.focus();
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+
+
+    /* =====================================================
+       RESIZE HANDLER
+    ====================================================== */
+
+    let resizeTimer;
+
+
+    window.addEventListener(
+        "resize",
+        () => {
+
+            clearTimeout(
+                resizeTimer
+            );
+
+
+            resizeTimer =
+                setTimeout(
+                    () => {
+
+                        /*
+                         * Reset mobile navigation
+                         * when moving to desktop.
+                         */
+                        if (
+                            window.innerWidth >
+                            900
+                        ) {
+
+                            closeMobileMenu();
+
+                        }
+
+
+                        /*
+                         * Keep active navigation
+                         * accurate after resizing.
+                         */
+                        updateActiveNavigation();
+
+                    },
+                    120
+                );
+
+        }
+    );
+
+
+
+    /* =====================================================
+       DYNAMIC COPYRIGHT YEAR
+    ====================================================== */
+
+    if (currentYear) {
+
+        currentYear.textContent =
+            new Date().getFullYear();
+
+    }
+
+
+
+    /* =====================================================
+       HANDLE INITIAL HASH
+    ====================================================== */
+
+    function handleInitialHash() {
+
+        const hash =
+            window.location.hash;
+
+
+        if (!hash) return;
+
+
+        const target =
+            document.querySelector(
+                hash
+            );
+
+
+        if (!target) return;
+
+
+        /*
+         * Wait until the page is rendered before
+         * scrolling to the requested section.
+         */
+        setTimeout(
+            () => {
+
+                target.scrollIntoView({
+                    behavior:
+                        prefersReducedMotion()
+                            ? "auto"
+                            : "smooth",
+
+                    block: "start"
+                });
+
+            },
+            350
+        );
+
+    }
+
+
+    handleInitialHash();
+
+
+
+    /* =====================================================
+       BROWSER HISTORY / HASH CHANGES
+    ====================================================== */
+
+    window.addEventListener(
+        "hashchange",
+        () => {
+
+            updateActiveNavigation();
+
+        }
+    );
+
+
+
+    /* =====================================================
+       EXTERNAL LINK SECURITY
+    ====================================================== */
+
+    const externalLinks =
+        document.querySelectorAll(
+            'a[target="_blank"]'
+        );
+
+
+    externalLinks.forEach(
+        (link) => {
+
+            const currentRel =
+                link.getAttribute("rel") ||
+                "";
+
+
+            const relParts =
+                currentRel
+                    .split(" ")
+                    .filter(Boolean);
+
+
+            if (
+                !relParts.includes(
+                    "noopener"
+                )
+            ) {
+
+                relParts.push(
+                    "noopener"
+                );
+
+            }
+
+
+            if (
+                !relParts.includes(
+                    "noreferrer"
+                )
+            ) {
+
+                relParts.push(
+                    "noreferrer"
+                );
+
+            }
+
+
+            link.setAttribute(
+                "rel",
+                relParts.join(" ")
+            );
+
+        }
+    );
+
+
+
+    /* =====================================================
+       INITIAL UI STATE
+    ====================================================== */
+
+    updateHeader();
+
+    updateActiveNavigation();
+
+
+
+    /* =====================================================
+       DEBUG / DEVELOPMENT MESSAGE
+    ====================================================== */
+
+    console.log(
+        "Shovon Mahali Portfolio — JavaScript loaded successfully."
+    );
+
+});
